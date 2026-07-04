@@ -1,49 +1,80 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
+import { useState, useEffect } from "react";
+import { createDeck, getAllDecks, deleteDeck } from "./api/decks";
+import type { Deck } from "./types";
+import DeckDetail from "./DeckDetail";
 import "./App.css";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [decks, setDecks] = useState<Deck[]>([]);
+  const [newDeckName, setNewDeckName] = useState("");
+  const [newDeckDescription, setNewDeckDescription] = useState("");
+  const [selectedDeck, setSelectedDeck] = useState<Deck | null>(null);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+  async function loadDecks() {
+    const result = await getAllDecks();
+    setDecks(result);
+  }
+
+  useEffect(() => {
+    loadDecks();
+  }, []);
+
+  async function handleCreateDeck(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newDeckName.trim()) return;
+
+    await createDeck(newDeckName, newDeckDescription);
+    setNewDeckName("");
+    setNewDeckDescription("");
+    await loadDecks();
+  }
+
+  async function handleDeleteDeck(id: number) {
+    await deleteDeck(id);
+    await loadDecks();
+  }
+
+  // Si un deck est sélectionné, on affiche l'écran de détail à la place
+  if (selectedDeck) {
+    return (
+      <DeckDetail
+        deck={selectedDeck}
+        onBack={() => setSelectedDeck(null)}
+      />
+    );
   }
 
   return (
     <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+      <h1>Mes paquets de flashcards</h1>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
+      <form onSubmit={handleCreateDeck} className="deck-form">
         <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+          placeholder="Nom du paquet (ex: Espagnol)"
+          value={newDeckName}
+          onChange={(e) => setNewDeckName(e.target.value)}
         />
-        <button type="submit">Greet</button>
+        <input
+          placeholder="Description (optionnel)"
+          value={newDeckDescription}
+          onChange={(e) => setNewDeckDescription(e.target.value)}
+        />
+        <button type="submit">Créer le paquet</button>
       </form>
-      <p>{greetMsg}</p>
+
+      <ul className="deck-list">
+        {decks.map((deck) => (
+          <li key={deck.id} className="deck-item">
+            <div onClick={() => setSelectedDeck(deck)} style={{ cursor: "pointer", flex: 1 }}>
+              <strong>{deck.name}</strong>
+              {deck.description && <p>{deck.description}</p>}
+            </div>
+            <button onClick={() => handleDeleteDeck(deck.id)}>Supprimer</button>
+          </li>
+        ))}
+      </ul>
+
+      {decks.length === 0 && <p>Aucun paquet pour l'instant. Crée le premier ci-dessus !</p>}
     </main>
   );
 }
