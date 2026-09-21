@@ -53,45 +53,58 @@ function DeckDetail({ deck, onBack }: DeckDetailProps) {
     }
 
     return (
-    <main className="container">
-        <button onClick={onBack} className="back-button">← Retour aux paquets</button>
-        <h1>{deck.name}</h1>
-        <button onClick={() => setReviewing(true)} className="review-button">
-            Réviser ce paquet
-        </button>
-        <button onClick={handleResetProgress} className="reset-button">
-            Réinitialiser la progression
-        </button>
-        {deck.description && <p>{deck.description}</p>}
+        <main className="container">
+            <button onClick={onBack} className="back-button">← Retour aux paquets</button>
 
-        <form onSubmit={handleAddCard} className="card-form">
-        <input
-            placeholder="Recto (question)"
-            value={front}
-            onChange={(e) => setFront(e.target.value)}
-        />
-        <input
-            placeholder="Verso (réponse)"
-            value={back}
-            onChange={(e) => setBack(e.target.value)}
-        />
-        <button type="submit">Ajouter la carte</button>
-        </form>
-
-        <ul className="card-list">
-        {cards.map((card) => (
-            <li key={card.id} className="card-item">
-            <div>
-                <strong>{card.front}</strong>
-                <p>{card.back}</p>
+            <div className="deck-header">
+            <div className="deck-header-top">
+                <div>
+                <h1>{deck.name}</h1>
+                {deck.description && <p className="deck-description">{deck.description}</p>}
+                </div>
+                <button onClick={() => setReviewing(true)} className="review-button">
+                Réviser
+                </button>
             </div>
-            <button onClick={() => handleDeleteCard(card.id)}>Supprimer</button>
-            </li>
-        ))}
-        </ul>
 
-        {cards.length === 0 && <p>Aucune carte pour l'instant. Ajoute la première ci-dessus !</p>}
-    </main>
+            <div className="deck-meta">
+                <span>{cards.length} carte{cards.length > 1 ? "s" : ""}</span>
+                <button onClick={handleResetProgress} className="reset-link">
+                Réinitialiser la progression
+                </button>
+            </div>
+            </div>
+
+            <form onSubmit={handleAddCard} className="card-form">
+            <input
+                placeholder="Recto (question)"
+                value={front}
+                onChange={(e) => setFront(e.target.value)}
+            />
+            <input
+                placeholder="Verso (réponse)"
+                value={back}
+                onChange={(e) => setBack(e.target.value)}
+            />
+            <button type="submit">Ajouter la carte</button>
+            </form>
+
+            <div className="scrollable-area">
+            <ul className="card-list">
+                {cards.map((card) => (
+                <li key={card.id} className="card-item">
+                    <div>
+                    <strong>{card.front}</strong>
+                    <p>{card.back}</p>
+                    </div>
+                    <button onClick={() => handleDeleteCard(card.id)}>Supprimer</button>
+                </li>
+                ))}
+            </ul>
+
+            {cards.length === 0 && <p>Aucune carte pour l'instant. Ajoute la première ci-dessus !</p>}
+            </div>
+        </main>
     );
 }
 

@@ -78,9 +78,16 @@ function ReviewScreen({ deck, onBack }: ReviewScreenProps) {
         <div className="review-card">
             <p className="review-progress">{currentIndex + 1} / {queue.length}</p>
 
-            <div className="flashcard" onClick={() => setShowBack(!showBack)}>
-            <p>{showBack ? queue[currentIndex].back : queue[currentIndex].front}</p>
-            {!showBack && <span className="flip-hint">Cliquer pour retourner</span>}
+            <div className="flashcard-scene">
+            <div className={`flashcard ${showBack ? "is-flipped" : ""}`} onClick={() => setShowBack(!showBack)}>
+                <div className="flashcard-face face-front">
+                <p>{queue[currentIndex].front}</p>
+                <span className="flip-hint">Cliquer pour retourner</span>
+                </div>
+                <div className="flashcard-face face-back">
+                <p>{queue[currentIndex].back}</p>
+                </div>
+            </div>
             </div>
 
             {showBack && (
