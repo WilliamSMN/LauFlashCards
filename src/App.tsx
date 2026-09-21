@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createDeck, getAllDecks, deleteDeck } from "./api/decks";
+import { getAllDecks, deleteDeck } from "./api/decks";
 import type { Deck } from "./types";
 import DeckDetail from "./DeckDetail";
 import DeckCreation from "./DeckCreation"
