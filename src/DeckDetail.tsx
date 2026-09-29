@@ -13,6 +13,8 @@ function DeckDetail({ deck, onBack }: DeckDetailProps) {
     const [front, setFront] = useState("");
     const [back, setBack] = useState("");
     const [reviewing, setReviewing] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
+    const [showResetToast, setShowResetToast] = useState(false);
 
     async function loadCards() {
     const result = await getCardsByDeck(deck.id);
@@ -38,14 +40,13 @@ function DeckDetail({ deck, onBack }: DeckDetailProps) {
     await loadCards();
     }
 
-    async function handleResetProgress() {
-        const confirmed = window.confirm(
-            "Réinitialiser la progression de toutes les cartes de ce paquet ?"
-        );
-        if (!confirmed) return;
-
+    async function confirmResetProgress() {
+        setShowResetConfirm(false);
         await resetCardsProgress(deck.id);
         await loadCards();
+
+        setShowResetToast(true);
+        setTimeout(() => setShowResetToast(false), 2500);
     }
 
     if (reviewing) {
@@ -69,7 +70,7 @@ function DeckDetail({ deck, onBack }: DeckDetailProps) {
 
             <div className="deck-meta">
                 <span>{cards.length} carte{cards.length > 1 ? "s" : ""}</span>
-                <button onClick={handleResetProgress} className="reset-link">
+                <button onClick={() => setShowResetConfirm(true)} className="reset-link">
                 Réinitialiser la progression
                 </button>
             </div>
@@ -104,6 +105,29 @@ function DeckDetail({ deck, onBack }: DeckDetailProps) {
 
             {cards.length === 0 && <p>Aucune carte pour l'instant. Ajoute la première ci-dessus !</p>}
             </div>
+
+            {showResetConfirm && (
+                <div className="modal-overlay" onClick={() => setShowResetConfirm(false)}>
+                    <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                        <h2>Réinitialiser la progression ?</h2>
+                        <p>Toutes les cartes de ce paquet reviendront à leur état initial. Cette action est irréversible.</p>
+                        <div className="modal-actions">
+                            <button onClick={() => setShowResetConfirm(false)} className="cancel-button">
+                                Annuler
+                            </button>
+                            <button onClick={confirmResetProgress} className="confirm-danger-button">
+                                Réinitialiser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showResetToast && (
+                <div className="toast">
+                    ✓ Progression réinitialisée
+                </div>
+            )}
         </main>
     );
 }

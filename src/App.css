@@ -20,6 +20,7 @@
   --color-easy: #2FB380;
 
   --font-display: "Inter", serif;
+  --font-title: "Alex Brush", cursive;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 
   --shadow-card: 0 2px 8px rgba(43, 27, 32, 0.06), 0 1px 2px rgba(43, 27, 32, 0.04);
@@ -262,13 +263,14 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: safe center;
   padding: 2rem;
   border-radius: 20px;
   backface-visibility: hidden;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-elevated);
+  overflow-y: auto;
 }
 
 .flashcard-face::before {
@@ -288,6 +290,9 @@ input::placeholder {
   font-size: 1.3rem;
   color: var(--color-ink);
   margin: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .flashcard-face.face-back {
@@ -310,11 +315,9 @@ input::placeholder {
 }
 
 .btn-again { background-color: var(--color-again); }
-.btn-hard { background-color: var(--color-hard); }
 .btn-easy { background-color: var(--color-easy); }
 
 .btn-again:hover { background-color: #a8244f; }
-.btn-hard:hover { background-color: #c6841f; }
 .btn-easy:hover { background-color: #1f8c63; }
 
 .review-done {
@@ -334,7 +337,10 @@ input::placeholder {
 }
 
 .page-header h1 {
-  margin: 0;
+  font-family: var(--font-title);
+  font-weight: normal;
+  font-size: 2.6rem;
+  color: var(--color-primary);
 }
 
 .add-button {
@@ -405,4 +411,42 @@ input::placeholder {
   color: var(--color-primary-dark);
   background: none;
   transform: none;
+}
+
+.deck-creation-container {
+  justify-content: center;
+  align-items: center;
+}
+
+.deck-creation-form {
+  flex-direction: column;
+  width: 100%;
+  max-width: 380px;
+}
+
+.deck-creation-form h1 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.deck-creation-form input {
+  width: 100%;
+}
+
+.deck-creation-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.cancel-button {
+  background: none;
+  color: var(--color-muted);
+  border: 1.5px solid var(--color-border);
+}
+
+.cancel-button:hover {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-dark);
 }

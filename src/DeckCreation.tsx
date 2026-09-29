@@ -21,19 +21,27 @@ function DeckCreation({ onBack }: DeckCreationScreenProps) {
   }
 
   return (
-    <form onSubmit={handleCreateDeck} className="deck-form">
-    <input
-        placeholder="Nom du paquet"
-        value={newDeckName}
-        onChange={(e) => setNewDeckName(e.target.value)}
-    />
-    <input
-        placeholder="Description (optionnel)"
-        value={newDeckDescription}
-        onChange={(e) => setNewDeckDescription(e.target.value)}
-    />
-    <button type="submit">Créer le paquet</button>
-    </form>
+    <main className="container deck-creation-container">
+      <form onSubmit={handleCreateDeck} className="deck-form deck-creation-form">
+        <h1>Nouveau paquet</h1>
+        <input
+          placeholder="Nom du paquet"
+          value={newDeckName}
+          onChange={(e) => setNewDeckName(e.target.value)}
+        />
+        <input
+          placeholder="Description (optionnel)"
+          value={newDeckDescription}
+          onChange={(e) => setNewDeckDescription(e.target.value)}
+        />
+        <div className="deck-creation-actions">
+          <button type="button" onClick={onBack} className="cancel-button">
+            Annuler
+          </button>
+          <button type="submit">Créer le paquet</button>
+        </div>
+      </form>
+    </main>
   );
 }
 

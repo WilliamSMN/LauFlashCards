@@ -15,42 +15,42 @@ function ReviewScreen({ deck, onBack }: ReviewScreenProps) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-    loadDueCards();
+        loadDueCards();
     }, [deck.id]);
 
     async function loadDueCards() {
-    setLoading(true);
-    const cards = await getCardsDueForReview(deck.id);
-    setQueue(cards);
-    setCurrentIndex(0);
-    setShowBack(false);
-    setLoading(false);
+        setLoading(true);
+        const cards = await getCardsDueForReview(deck.id);
+        setQueue(cards);
+        setCurrentIndex(0);
+        setShowBack(false);
+        setLoading(false);
     }
 
     async function handleAnswer(quality: ReviewQuality) {
-    const currentCard = queue[currentIndex];
-    const result = calculateSM2(currentCard, quality);
+        const currentCard = queue[currentIndex];
+        const result = calculateSM2(currentCard, quality);
 
-    await updateCardAfterReview(
-        currentCard.id,
-        result.ease_factor,
-        result.interval_days,
-        result.repetitions,
-        result.next_review_date
-    );
+        await updateCardAfterReview(
+            currentCard.id,
+            result.ease_factor,
+            result.interval_days,
+            result.repetitions,
+            result.next_review_date
+        );
 
-    setShowBack(false);
+        setShowBack(false);
 
-    // Si la carte était "again", on la remet en fin de file pour la revoir tout de suite
-    if (quality === "again") {
-        setQueue((prev) => [...prev.slice(0, currentIndex), ...prev.slice(currentIndex + 1), currentCard]);
-    } else {
-        setCurrentIndex((prev) => prev + 1);
-    }
+        // Si la carte était "again", on la remet en fin de file pour la revoir tout de suite
+        if (quality === "again") {
+            setQueue((prev) => [...prev.slice(0, currentIndex), ...prev.slice(currentIndex + 1), currentCard]);
+        } else {
+            setCurrentIndex((prev) => prev + 1);
+        }
     }
 
     if (loading) {
-    return <main className="container"><p>Chargement...</p></main>;
+        return <main className="container"><p>Chargement...</p></main>;
     }
 
     const isFinished = queue.length > 0 && currentIndex >= queue.length;
@@ -93,7 +93,6 @@ function ReviewScreen({ deck, onBack }: ReviewScreenProps) {
             {showBack && (
             <div className="review-buttons">
                 <button className="btn-again" onClick={() => handleAnswer("again")}>Encore</button>
-                <button className="btn-hard" onClick={() => handleAnswer("hard")}>Difficile</button>
                 <button className="btn-easy" onClick={() => handleAnswer("easy")}>Facile</button>
             </div>
             )}
